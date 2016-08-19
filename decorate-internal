@@ -39,7 +39,7 @@ _features_create_pane() {
   target="$session:$window"
   pane="$(_features_pane "$target")"
   targetpane="$target.$pane"
-  tmux split-window -t "$targetpane" "$type"
+  tmux split-window -d -t "$targetpane" "$type"
   if [ "$cmd" ]; then
     _features_send "$target" "$cmd"
   fi
@@ -52,7 +52,7 @@ w() {
   session="$(_features_session)"
   window="$(_features_next_window "$session")"
   target="$session:$window"
-  tmux new-window -t "$target" -n "$name"
+  tmux new-window -d -t "$target" -n "$name"
   if [ "$cmd" ]; then
     _features_send "$target" "$cmd"
   fi
