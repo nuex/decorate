@@ -1,0 +1,72 @@
+# return the currently attached session
+_features_session() {
+  tmux ls | awk -f lib/session.awk
+}
+
+# return the next window
+_features_next_window() {
+  session="$1"; shift
+  tmux list-windows -t "$session" | awk -f lib/next_window.awk
+}
+
+# return the last window
+_features_last_window() {
+  session="$1"; shift
+  tmux list-windows -t "$session" | awk -f lib/last_window.awk
+}
+
+# return the last pane for the given target
+_features_pane() {
+  target="$1"; shift
+  tmux list-panes -t "$target" | awk -f lib/last_pane.awk
+}
+
+# send a command to the active pane
+_features_send() {
+  target="$1"; shift
+  cmd="$1"; shift
+  pane="$(_features_pane "$target")"
+  targetpane="$target.$pane"
+  tmux send-keys -t "$targetpane" "$cmd" Enter
+}
+
+# create a named window and run a command
+w() {
+  name="$1"; shift
+  cmd="$1"
+  session="$(_features_session)"
+  window="$(_features_next_window "$session")"
+  target="$session:$window"
+  tmux new-window -t "$target" -n "$name"
+  if [ "$cmd" ]; then
+    _features_send "$target" "$cmd"
+  fi
+}
+
+# split horizontally and send command
+h() {
+  cmd="$1"
+  session="$(_features_session)"
+  window="$(_features_last_window "$session")"
+  target="$session:$window"
+  pane="$(_features_pane "$target")"
+  targetpane="$target.$pane"
+  tmux split-window -t "$targetpane" -h
+  if [ "$cmd" ]; then
+    _features_send "$target" "$cmd"
+  fi
+}
+
+# split vertically and send command
+v() {
+  cmd="$1"
+  session="$(_features_session)"
+  window="$(_features_last_window "$session")"
+  target="$session:$window"
+  pane="$(_features_pane "$target")"
+  targetpane="$target.$pane"
+  tmux split-window -t "$targetpane" -v
+  if [ "$cmd" ]; then
+    _features_send "$target" "$cmd"
+  fi
+}
