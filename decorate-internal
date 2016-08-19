@@ -30,6 +30,21 @@ _features_send() {
   tmux send-keys -t "$targetpane" "$cmd" Enter
 }
 
+# create a pane split via the given switch and send a command
+_features_create_pane() {
+  type="$1"; shift
+  cmd="$1"
+  session="$(_features_session)"
+  window="$(_features_last_window "$session")"
+  target="$session:$window"
+  pane="$(_features_pane "$target")"
+  targetpane="$target.$pane"
+  tmux split-window -t "$targetpane" "$type"
+  if [ "$cmd" ]; then
+    _features_send "$target" "$cmd"
+  fi
+}
+
 # create a named window and run a command
 w() {
   name="$1"; shift
@@ -46,27 +61,11 @@ w() {
 # split horizontally and send command
 h() {
   cmd="$1"
-  session="$(_features_session)"
-  window="$(_features_last_window "$session")"
-  target="$session:$window"
-  pane="$(_features_pane "$target")"
-  targetpane="$target.$pane"
-  tmux split-window -t "$targetpane" -h
-  if [ "$cmd" ]; then
-    _features_send "$target" "$cmd"
-  fi
+  _features_create_pane -h "$cmd"
 }
 
 # split vertically and send command
 v() {
   cmd="$1"
-  session="$(_features_session)"
-  window="$(_features_last_window "$session")"
-  target="$session:$window"
-  pane="$(_features_pane "$target")"
-  targetpane="$target.$pane"
-  tmux split-window -t "$targetpane" -v
-  if [ "$cmd" ]; then
-    _features_send "$target" "$cmd"
-  fi
+  _features_create_pane -v "$cmd"
 }
