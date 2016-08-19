@@ -33,7 +33,7 @@ created pane.
 Use sourced shell functions for longer commands and place them in files 
 named after the feature. Place them in a functions directory and source 
 them in your `.bashrc`. For example, this shellscript called `dev-project` 
-starts a set of panes for a web development project:
+provides pane commands for a web development project:
 
     _srv() {
       cd ~/_dev/project && . docker-kit.sh && dstart
