@@ -1,3 +1,3 @@
 w important 'top'
-v 'less +F /var/log/syslog'
-h 'rev /etc/passwd'
+h 'less +F /var/log/syslog'
+v 'rev /etc/passwd'
