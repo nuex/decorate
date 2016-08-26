@@ -13,7 +13,6 @@ Example scripts for adding "features" to a running tmux session.
 A feature is a shell script that uses a simple dsl for tmux.
 
     w srv _srv
-    sleep 1
     w code _code
     v _watch_css
     h _watch_js
