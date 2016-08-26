@@ -34,6 +34,10 @@ named after the feature. Place them in a functions directory and source
 them in your `.bashrc`. For example, this shellscript called `dev-project` 
 provides pane commands for a web development project:
 
+    __docker_up() {
+      docker inspect --format='{{ .State.Running }}' gt 2> /dev/null
+    }
+
     _srv() {
       cd ~/_dev/project && . docker-kit.sh && dstart
     }
@@ -43,9 +47,17 @@ provides pane commands for a web development project:
     }
 
     _watch_css() {
-      cd ~/_dev/project && docker exec project npm run watch
+      if [ "$(__docker_up)" == "true" ]; then
+        cd ~/_dev/project && docker exec project npm run watch
+      else
+        _watch_css
+      end
     }
 
     _watch_js() {
-      cd ~/_dev/project && docker exec project npm run watch-webpack
+      if [ "$(__docker_up)" == "true" ]; then
+        cd ~/_dev/project && docker exec project npm run watch-webpack
+      else
+        _watch_js
+      end
     }
