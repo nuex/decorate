@@ -13,9 +13,7 @@ _features_create_pane() {
   type="$1"; shift
   cmd="$1"
   pane="$(tmux list-panes -t "$_last_window" -F '#{pane_id}' | tail -n1)"
-  echo "splitting pane from $pane" >> log
   created="$(tmux split-window -dP -t "$pane" "$type")"
-  echo "created $created" >> log
   if [ "$cmd" ]; then
     _features_send "$created" "$cmd"
   fi
